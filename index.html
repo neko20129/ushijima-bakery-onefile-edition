@@ -1,0 +1,1902 @@
+<!doctype html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>ウシジマのパン屋</title>
+        <style>html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background-color: #a2ffcc;
+    overflow: hidden;
+}
+
+.game-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.left-menu,
+.right-menu {
+    opacity: .8;
+    background-color: #333;
+    width: 10%;
+    height: 100%;
+    align-items: center;
+}
+
+.game-main {
+    width:100%;
+    height:100%;
+    display: flex;
+    align-items: center;
+}
+
+.level,
+.level-up-num,
+.money {
+    text-align: center;
+    color: #fff;
+}
+
+.level-up-num,
+.money {
+    font-size: 1.3em
+}
+
+.field-container {
+    width: 100%;
+    margin-right: 15px;
+}
+
+.field {
+    display: block;
+    width: 100%;
+}
+
+.game-log-range {
+    width: 60%;
+    height: 100vh;
+    margin-left: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.game-log-range p {
+    padding: .3em;
+    margin: .1em;
+    font-size: 1.3em;
+    color: #fff;
+    background-color: #000;
+    transition: .5s;
+}
+
+/*タブ切り替え*/
+
+.tab-1 {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    width: 40%;
+}
+
+.tab-1 > label {
+    flex: 1 1;
+    order: -1;
+    min-width: 70px;
+    height: 4%;
+    padding: .7em 1em .5em;
+    border-bottom: 1px solid #f0f0f0;
+    border-radius: 0;
+    background-color: #e9f0f6;
+    color: #535353;
+    font-size: .9em;
+    text-align: center;
+    cursor: pointer;
+}
+
+.tab-1 > label:hover {
+    opacity: .8;
+}
+
+.tab-1 input {
+    display: none;
+}
+
+.tab-1 > div {
+    display: none;
+    height: 90%;
+    width: 100%;
+    padding: 1.5em 1em;
+    background-color: #fff;
+}
+
+.tab-1 label:has(:checked) {
+    background-color: #fff;
+    border-color: #ff7f50 #f0f0f0 #fff;
+    border-style: solid;
+    border-width: 4px 1px 1px;
+    border-radius: 5px;
+    color: #333333;
+}
+
+.tab-1 label:has(:checked) + div {
+    display: block;
+}
+/*タブ切り替え 以上*/
+/*モーダル*/
+.button-img {
+    width: 80%; 
+    height: auto;
+}
+
+.content-img {
+    width: 150px;
+    height: auto;
+    margin: 0;
+}
+
+.ingredient-img {
+    width: 50px;
+}
+
+.content-area {
+    width: 30%;
+    height: 100%;
+    text-align: center;
+}
+
+.buy-area
+.make-area {
+    padding: 1.5em 1em 1.5em 0;
+    width: 70%;
+}
+
+.buy-button,
+.make-button,
+.upgrade-button,
+.setting-button{
+    width: 8em;
+    height: 6em;
+    background-color: #ff7f50;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.buy-button:hover,
+.make-button:hover,
+.upgrade-button:hover,
+.setting-button:hover{
+    filter: brightness(1.5);
+}
+
+.modal_wrap1 input,
+.modal_wrap2 input,
+.modal_wrap3 input,
+.modal_wrap4 input,
+.modal_wrap5 input{
+    display: none;
+}
+
+.modal_open-label1,
+.modal_open-label2,
+.modal_open-label3,
+.modal_open-label4,
+.modal_open-label5,
+.modal_close-label{
+    cursor: pointer;
+}
+
+.modal_open-label1,
+.modal_open-label2,
+.modal_open-label3,
+.modal_open-label4,
+.modal_open-label5{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 6em;
+    height: 6em;
+    margin: 1em auto;
+    border: none;
+    border-radius: 50%;
+    background-color: #ff7f50;
+    transition: .3s;
+}
+
+.modal_open-label1:hover,
+.modal_open-label2:hover,
+.modal_open-label3:hover,
+.modal_open-label4:hover,
+.modal_open-label5:hover{
+    filter: brightness(1.5);
+}
+
+.modal1,
+.modal2,
+.modal3,
+.modal4,
+.modal5{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: none;
+}
+
+.modal_open-input1:checked + label + input + .modal1,
+.modal_open-input2:checked + label + input + .modal2,
+.modal_open-input3:checked + label + input + .modal3,
+.modal_open-input4:checked + label + input + .modal4,
+.modal_open-input5:checked + label + input + .modal5{
+    display: block;
+    animation: modal-animation .6s;
+}
+
+.modal_content-wrap1,
+.modal_content-wrap2,
+.modal_content-wrap3,
+.modal_content-wrap4,
+.modal_content-wrap5{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 650px;
+    background-color: #fefefe;
+    z-index: 2;
+    border-radius: 5px;
+}
+
+.modal_close-label{
+    background-color: #777;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    width: 36px;
+    height: 36px;
+    line-height: 1.6;
+    text-align: center;
+    display: table-cell;
+    position: fixed;
+    top: -15px;
+    right: -2%;
+    z-index: 99999;
+    font-size: 1.3em;
+}
+
+.to_left,
+.to_right {
+    background-color: #ff7f50;
+    color: #000;
+    border: none;
+    border-radius: 20px;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    display: table-cell;
+    position: fixed;
+    top: 50%;
+    z-index: 99990;
+    font-size: 1.3em;
+    transition: .3s;
+}
+
+.to_left {
+    left: -5%;
+}
+
+.to_right {
+    right: -5%;
+    top: 48%;
+}
+
+.to_left:hover,
+.to_right:hover {
+    filter: brightness(1.5);
+}
+
+.modal_content1,
+.modal_content2,
+.modal_content3,
+.modal_content4,
+.modal_content5{
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 39px 10px 40px;
+    display: flex;
+}
+
+.modal_background1,
+.modal_background2,
+.modal_background3,
+.modal_background4,
+.modal_background5{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .45);
+    z-index: 1;
+}
+
+@keyframes modal-animation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@media only screen and (max-width: 520px) {
+    .modal_open-label1,
+    .modal_open-label2,
+    .modal_open-label3,
+    .modal_open-label4,
+    .modal_open-label5{
+        max-width: 90%;
+        padding: .94em 2.1em .94em 2.6em;
+    }
+
+    .modal_close-label{
+        top: -17px;
+        right: -4%;
+    }
+
+    .modal_content-wrap1,
+    .modal_content-wrap2,
+    .modal_content-wrap3,
+    .modal_content-wrap4,
+    .modal_content-wrap5{
+        width: 90vw;
+    }
+
+    .modal_content1,
+    .modal_content2,
+    .modal_content3,
+    .modal_content4,
+    .modal_content5{
+        padding: 33px 21px 35px;
+        max-width: 100%;
+    }
+}
+
+@media screen and (max-height: 600px) {
+
+
+    /* 1. 画面からはみ出た部分を縦スクロールで読めるようにする */
+    body {
+        overflow-y: auto !important;
+    }
+
+    /* 2. 左右中央の3つのエリアを「縦並び」に変え、横幅を100%にする */
+    .game-container,
+    .game-main {
+        flex-direction: column !important;
+        height: auto !important;
+    }
+
+    .left-menu,
+    .right-menu,
+    .game-log-range,
+    .tab-1 {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .game-log-range {
+        display: none;
+    }
+
+    /* 3. 左メニューと右メニューの中身を横一列に綺麗に並べる */
+    .left-menu {
+        display: flex !important;
+        justify-content: space-around;
+        padding: 0;
+        opacity: 0.95;
+        position: fixed;
+        z-index: 999;
+    }
+
+    .left-menu p, .left-menu h2{
+        font-size: 1.7em;
+    }
+
+    .right-menu {
+        display: flex !important;
+        justify-content: space-around;
+        padding: 15px 0;
+        bottom:0;
+        opacity: 0.95;
+        position: fixed;
+    z-index: 999;
+    }
+
+    .money {
+        margin: 0;
+    }
+
+    /* 右メニュー内の丸いアイコンボタンの余白を消す */
+    .modal_open-label1, .modal_open-label2, 
+    .modal_open-label3, .modal_open-label4,
+    .modal_open-label5 {
+        margin: 0 !important;
+        width: 7em !important;
+        height: 7em !important;
+    }
+
+    /* 5. ポップアップ（モーダル）の中身も縦並びに変えて潰れを防ぐ */
+    .modal_content1, .modal_content2 {
+        flex-direction: column !important;
+        max-height: 80vh !important;
+    }
+    
+    .content-area, .buy-area, .make-area {
+        width: 100% !important;
+        padding: 10px 0 !important;
+        text-align: center;
+    }
+
+    /* モーダル内のボタンの並びを中央に寄せる */
+    .buy-area div, .make-area div {
+        justify-content: center !important;
+    }
+
+        /* タブの構造をスマホ用にリセット */
+        /* タブ全体の枠組み */
+    .tab-1 {
+        display: flex !important;       /* 縦ではなく「横」に並べる */
+        flex-direction: row !important; /* 横並びを強制 */
+        flex-wrap: wrap !important;     /* 中身（div）は下に回り込ませる */
+        width: 100% !important;
+        margin-top: 91px;
+    }
+
+    /* 「材料」「パン」のボタン（ラベル）を横並びにする */
+    .tab-1 label {
+        flex: 1 1 45% !important;       /* 2つのボタンで均等に横幅を分ける */
+        padding: 12px 0 !important;
+        height: 3.5em !important;
+        line-height: 2em !important;
+        font-size: 1.2em;
+        order: -1 !important;           /* ボタンを最上部に集める */
+        box-sizing: border-box;
+    }
+
+    /* 表示される中身のエリア */
+    .tab-1 div {
+        width: 100% !important; 
+        height: auto !important;
+        border-radius: 5px;
+        box-sizing: border-box;
+        margin-bottom: 9em;
+    }
+
+    .tab-1 div p {
+        font-size: 1.3em;
+    }
+}</style>
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="ウシジマのパン屋" />
+        <meta property="og:description" content="ひたすらパンを作って売るだけのゲーム。横画面推奨です" />
+        <meta property="og:image" content="img/komugi.png" />
+        <meta property="og:site_name" content="ウシジマのパン屋" />
+        <link rel="icon" href="img/komugi.png" type="image/png">
+    </head>
+    <body scroll="no">
+            <div class="game-container" id="all-game">
+                <div class="left-menu">
+                    <h2 class="level">Lv. <span id="level"></span></h2>
+                    <p class="level-up-num"><span id="sold">0</span>/<span id="level-up">3</span></p>
+                    <br/>
+                    <p class="money">所持金: <br/> Ü <span id="money1"></span></p>
+                </div>
+            
+                <div class="game-main">
+                    <div id="log-range" class="game-log-range"></div>
+                
+                    <div class="tab-1">
+                        <label>
+                            <input type="radio" name="tab-1" checked>
+                            材料
+                        </label>
+                        <div>
+                            <p id="table1-1_elm">
+                                <span id="table1-1_name"></span>: <span id="table1-1_num"></span>個
+                            </p>
+                        
+                            <p id="table1-2_elm">
+                                <span id="table1-2_name"></span>: <span id="table1-2_num"></span>個
+                            </p>
+                        
+                            <p id="table1-3_elm">
+                                <span id="table1-3_name"></span>: <span id="table1-3_num"></span>個
+                            </p>
+                        
+                            <p id="table1-4_elm">
+                                <span id="table1-4_name"></span>: <span id="table1-4_num"></span>個
+                            </p>
+                        
+                            <p id="table1-5_elm">
+                                <span id="table1-5_name"></span>: <span id="table1-5_num"></span>個
+                            </p>
+                        
+                            <p id="table1-6_elm">
+                                <span id="table1-6_name"></span>: <span id="table1-6_num"></span>個
+                            </p>
+                        
+                            <p id="table1-7_elm">
+                                <span id="table1-7_name"></span>: <span id="table1-7_num"></span>個
+                            </p>
+                        
+                            <p id="table1-8_elm">
+                                <span id="table1-8_name"></span>: <span id="table1-8_num"></span>個
+                            </p>
+                        
+                            <p id="table1-9_elm">
+                                <span id="table1-9_name"></span>: <span id="table1-9_num"></span>個
+                            </p>
+                        </div>
+                    
+                        <label>
+                            <input type="radio" name="tab-1">
+                            パン
+                        </label>
+                        <div>
+                            <p id="table2-1_elm">
+                                <span id="table2-1_name"></span>: <span id="table2-1_num"></span>個
+                            </p>
+                            <p id="table2-2_elm">
+                                <span id="table2-2_name"></span>: <span id="table2-2_num"></span>個
+                            </p>
+                            <p id="table2-3_elm">
+                                <span id="table2-3_name"></span>: <span id="table2-3_num"></span>個
+                            </p>
+                            <p id="table2-4_elm">
+                                <span id="table2-4_name"></span>: <span id="table2-4_num"></span>個
+                            </p>
+                            <p id="table2-5_elm">
+                                <span id="table2-5_name"></span>: <span id="table2-5_num"></span>個
+                            </p>
+                            <p id="table2-6_elm">
+                                <span id="table2-6_name"></span>: <span id="table2-6_num"></span>個
+                            </p>
+                            <p id="table2-7_elm">
+                                <span id="table2-7_name"></span>: <span id="table2-7_num"></span>個
+                            </p>
+                            <p id="table2-8_elm">
+                                <span id="table2-8_name"></span>: <span id="table2-8_num"></span>個
+                            </p>
+                            <p id="table2-9_elm">
+                                <span id="table2-9_name"></span>: <span id="table2-9_num"></span>個
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="right-menu">
+
+                    <div class="modal_wrap1">
+                        <input type="radio" id="modal_open1" class="modal_open-input1" name="modal_trigger"/>
+                        <label for="modal_open1" class="modal_open-label1">
+                            <img src="img/track.png" class="button-img" />
+                        </label>
+                        <input type="radio" id="modal_close1" name="modal_trigger"/>
+                        <div class="modal1">
+                            <div class="modal_content-wrap1">
+                                <label for="modal_close1" class="modal_close-label">×</label>
+                            
+                                <button id="buy-left" class="to_left">◀</button>
+                                <button id="buy-right" class="to_right">▶</button>
+                            
+                                <div class="modal_content1">
+                                    <div class="content-area">
+                                        <h2 id="content1"></h2>
+                                        <img id="img1" class="content-img"/>
+                                        <h3 style="margin-bottom: 3px">値段: Ü <span id="nedan"></span></h3>
+                                        <h3 style="margin: 0">所持数: <span id="buy-have"></span></h3>
+                                    </div>
+
+                                    <div class="buy-area">
+                                        <div>所持金: Ü <span id="money2"></span></div>
+                                        <div style="display: flex; margin-top: 20px">
+                                            <button id="buy1" class="buy-button">1個買う</button>
+                                            <button id="buy10" class="buy-button">10個買う</button>
+                                            <button id="buy100" class="buy-button">100個買う</button>
+                                            <button id="buyAll" class="buy-button">買えるだけ<br/>買う</button>
+                                        </div>
+                                        <div style="display: flex; margin-top: 10px">
+                                            <button id="sell1" class="buy-button">1個売る</button>
+                                            <button id="sell10" class="buy-button">10個売る</button>
+                                            <button id="sell100" class="buy-button">100個売る</button>
+                                            <button id="sellAll" class="buy-button">売れるだけ<br/>売る</button>
+                                        </div>
+                                        <h3 id="buyOpenLvElm">解放レベル: Lv.<span id="buyOpenLv"></span></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <label for="modal_close1">
+                                <div class="modal_background1"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="modal_wrap2">
+                        <input type="radio" id="modal_open2" class="modal_open-input2" name="modal_trigger"/>
+                        <label for="modal_open2" class="modal_open-label2">
+                            <img src="img/bread.png" class="button-img" />
+                        </label>
+                        <input type="radio" id="modal_close2" name="modal_trigger"/>
+                        <div class="modal2">
+                            <div class="modal_content-wrap2">
+                                <label for="modal_close2" class="modal_close-label">×</label>
+
+                                <button id="make-left" class="to_left">◀</button>
+                                <button id="make-right" class="to_right">▶</button>
+                            
+                                <div class="modal_content2">
+                                    <div class="content-area">
+                                        <h2 id="content2">パン</h2>
+                                        <img src="img/pan.png" id="img2" class="content-img"/>
+                                        <h3 style="margin-bottom: 0">収入: Ü <span id="income"></span></h3>
+                                        <h3 style="margin: 0">所持数: <span id="make-have"></span></h3>
+                                    </div>
+                                    <div class="make-area">
+                                        <div class="ingredient-area">
+                                            <div id="ing1">
+                                                <div style="align-items: center; display: flex">
+                                                    <img src="img/komugi.png" id="ing1-img" class="ingredient-img"/>
+                                                    &nbsp;<span id="ing1-have">0</span>/<span id="ing1-need">1</span> 個
+                                                </div>
+                                            </div>
+                                            <div id="ing2">
+                                                <div style="align-items: center; display: flex">
+                                                    <img src="img/komugi.png" id="ing2-img" class="ingredient-img"/>
+                                                    &nbsp;<span id="ing2-have">0</span>/<span id="ing2-need">1</span> 個
+                                                </div>
+                                            </div>
+                                            <div id="ing3">
+                                                <div style="align-items: center; display: flex">
+                                                    <img src="img/komugi.png" id="ing3-img" class="ingredient-img"/>
+                                                    &nbsp;<span id="ing3-have">0</span>/<span id="ing3-need">1</span> 個
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div style="display: flex; padding-top: 3em">
+                                            <button id="make1" class="make-button">1個作る</button>
+                                            <button id="make10" class="make-button">10個作る</button>
+                                            <button id="make100" class="make-button">100個作る</button>
+                                            <button id="makeAll" class="make-button">作れるだけ<br/>作る</button>
+                                        </div>
+                                        <h3 id="makeOpenLvElm">解放レベル: Lv.<span id="makeOpenLv"></span></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <label for="modal_close2">
+                                <div class="modal_background2"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="modal_wrap3">
+                        <input type="radio" id="modal_open3" class="modal_open-input3" name="modal_trigger"/>
+                        <label for="modal_open3" class="modal_open-label3">
+                            <img src="img/upgrade.png" class="button-img" />
+                        </label>
+                        <input type="radio" id="modal_close3" name="modal_trigger"/>
+                        <div class="modal3">
+                            <div class="modal_content-wrap3">
+                                <label for="modal_close3" class="modal_close-label">×</label>
+                                <div class="modal_content3" style="display: flex; justify-content: center">
+                                    <div class="content-area">
+                                        <h2 id="upgrade-content1">チラシ配り</h2>
+                                        <h3 style="margin-bottom: 0">客がより多く来ます<br/></h3><br/><br/>
+                                        <h3 style="margin: 0">Lv. <span id="upgradeLv-1"></span></h3>
+                                        <h3>解放レベル: <span id="upgrade-unlock-Lv-1"></span></h3>
+                                        <h3>値段: Ü<span id="upgrade-need1"></span></h3>
+                                        <div style="display: flex; justify-content: center">
+                                            <button id="upgrade-button1" class="upgrade-button" style="margin-bottom: 0">レベルアップ</button>
+                                        </div>
+                                    </div>
+                                    <div class="content-area">
+                                        <h2 id="upgrade-content2">美味しいパン</h2>
+                                        <h3 style="margin-bottom: 0">パンを多く買う人が<br/>増えます</h3><br/>
+                                        <h3 style="margin: 0">Lv. <span id="upgradeLv-2"></span></h3>
+                                        <h3>解放レベル: <span id="upgrade-unlock-Lv-2"></span></h3>
+                                        <h3>値段: Ü<span id="upgrade-need2"></span></h3>
+                                        <div style="display: flex; justify-content: center">
+                                            <button id="upgrade-button2" class="upgrade-button" style="margin-bottom: 0">レベルアップ</button>
+                                        </div>
+                                    </div>
+                                    <div class="content-area">
+                                        <h2 id="upgrade-content3">黒字</h2>
+                                        <h3 style="margin-bottom: 0">パンを売ったときの<br/>利益が増えます</h3><br/>
+                                        <h3 style="margin: 0">Lv. <span id="upgradeLv-3"></span></h3>
+                                        <h3>解放レベル: <span id="upgrade-unlock-Lv-3"></span></h3>
+                                        <h3>値段: Ü<span id="upgrade-need3"></span></h3>
+                                        <div style="display: flex; justify-content: center">
+                                            <button id="upgrade-button3" class="upgrade-button" style="margin-bottom: 0">レベルアップ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <label for="modal_close3">
+                                <div class="modal_background3"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="modal_wrap4">
+                        <input type="radio" id="modal_open4" class="modal_open-input4" name="modal_trigger"/>
+                        <label for="modal_open4" class="modal_open-label4">
+                            <img src="img/settings.png" class="button-img" />
+                        </label>
+                        <input type="radio" id="modal_close4" name="modal_trigger"/>
+                        <div class="modal4">
+                            <div class="modal_content-wrap4">
+                                <label for="modal_close4" class="modal_close-label">×</label>
+                                <div class="modal_content4">
+                                    <div>
+                                        <div style="top: 0; left: -1px; position: fixed; width: 100%; text-align: center"><h2>設定</h2></div>
+                                        <div style="display: flex; margin-top: 30px">
+                                            <button class="setting-button" id="save">セーブコードを<br>発行</button>
+                                            <button class="setting-button" id="load">ロードする</button>
+                                            <button class="setting-button" id="set-bakeryName">ベーカリー名を<br>変更する</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <label for="modal_close4">
+                                <div class="modal_background4"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="modal_wrap5">
+                        <input type="radio" id="modal_open5" class="modal_open-input5" name="modal_trigger"/>
+                        <label for="modal_open5" class="modal_open-label5" id="ranking">
+                            <img src="img/ranking.png" class="button-img" />
+                        </label>
+                </div>
+            </div>
+        <script type="module">
+
+//変数
+const log = document.getElementById('log-range');
+
+const levelElm = document.getElementById('level');
+const soldElm = document.getElementById('sold');
+const levelUpElm = document.getElementById('level-up');
+
+const table1_1_elm = document.getElementById('table1-1_elm');
+const table1_2_elm = document.getElementById('table1-2_elm');
+const table1_3_elm = document.getElementById('table1-3_elm');
+const table1_4_elm = document.getElementById('table1-4_elm');
+const table1_5_elm = document.getElementById('table1-5_elm');
+const table1_6_elm = document.getElementById('table1-6_elm');
+const table1_7_elm = document.getElementById('table1-7_elm');
+const table1_8_elm = document.getElementById('table1-8_elm');
+const table1_9_elm = document.getElementById('table1-9_elm');
+
+const table1_1_name = document.getElementById('table1-1_name');
+const table1_2_name = document.getElementById('table1-2_name');
+const table1_3_name = document.getElementById('table1-3_name');
+const table1_4_name = document.getElementById('table1-4_name');
+const table1_5_name = document.getElementById('table1-5_name');
+const table1_6_name = document.getElementById('table1-6_name');
+const table1_7_name = document.getElementById('table1-7_name');
+const table1_8_name = document.getElementById('table1-8_name');
+const table1_9_name = document.getElementById('table1-9_name');
+
+const table1_1_num = document.getElementById('table1-1_num');
+const table1_2_num = document.getElementById('table1-2_num');
+const table1_3_num = document.getElementById('table1-3_num');
+const table1_4_num = document.getElementById('table1-4_num');
+const table1_5_num = document.getElementById('table1-5_num');
+const table1_6_num = document.getElementById('table1-6_num');
+const table1_7_num = document.getElementById('table1-7_num');
+const table1_8_num = document.getElementById('table1-8_num');
+const table1_9_num = document.getElementById('table1-9_num');
+
+const table2_1_elm = document.getElementById('table2-1_elm');
+const table2_2_elm = document.getElementById('table2-2_elm');
+const table2_3_elm = document.getElementById('table2-3_elm');
+const table2_4_elm = document.getElementById('table2-4_elm');
+const table2_5_elm = document.getElementById('table2-5_elm');
+const table2_6_elm = document.getElementById('table2-6_elm');
+const table2_7_elm = document.getElementById('table2-7_elm');
+const table2_8_elm = document.getElementById('table2-8_elm');
+const table2_9_elm = document.getElementById('table2-9_elm');
+
+const table2_1_name = document.getElementById('table2-1_name');
+const table2_2_name = document.getElementById('table2-2_name');
+const table2_3_name = document.getElementById('table2-3_name');
+const table2_4_name = document.getElementById('table2-4_name');
+const table2_5_name = document.getElementById('table2-5_name');
+const table2_6_name = document.getElementById('table2-6_name');
+const table2_7_name = document.getElementById('table2-7_name');
+const table2_8_name = document.getElementById('table2-8_name');
+const table2_9_name = document.getElementById('table2-9_name');
+
+const table2_1_num = document.getElementById('table2-1_num');
+const table2_2_num = document.getElementById('table2-2_num');
+const table2_3_num = document.getElementById('table2-3_num');
+const table2_4_num = document.getElementById('table2-4_num');
+const table2_5_num = document.getElementById('table2-5_num');
+const table2_6_num = document.getElementById('table2-6_num');
+const table2_7_num = document.getElementById('table2-7_num');
+const table2_8_num = document.getElementById('table2-8_num');
+const table2_9_num = document.getElementById('table2-9_num');
+
+const buyOpen = document.getElementById('modal_open1');
+const makeOpen = document.getElementById('modal_open2');
+
+const buyToL = document.getElementById('buy-left');
+const buyToR = document.getElementById('buy-right');
+const buyName = document.getElementById('content1');
+const buyImg = document.getElementById('img1');
+const buyNedan = document.getElementById('nedan');
+const buyHave = document.getElementById('buy-have');
+const buyOpenLv = document.getElementById('buyOpenLv');
+const buyOpenLvElm = document.getElementById('buyOpenLvElm');
+
+const makeToL = document.getElementById('make-left');
+const makeToR = document.getElementById('make-right');
+const makeName = document.getElementById('content2');
+const makeImg = document.getElementById('img2');
+const income = document.getElementById('income');
+const makeHave = document.getElementById('make-have');
+const makeOpenLv = document.getElementById('makeOpenLv');
+const makeOpenLvElm = document.getElementById('makeOpenLvElm');
+
+const ing1 = document.getElementById('ing1');
+const ing2 = document.getElementById('ing2');
+const ing3 = document.getElementById('ing3');
+const ing1_img = document.getElementById('ing1-img');
+const ing2_img = document.getElementById('ing2-img');
+const ing3_img = document.getElementById('ing3-img');
+const ing1_have = document.getElementById('ing1-have');
+const ing2_have = document.getElementById('ing2-have');
+const ing3_have = document.getElementById('ing3-have');
+const ing1_need = document.getElementById('ing1-need');
+const ing2_need = document.getElementById('ing2-need');
+const ing3_need = document.getElementById('ing3-need');
+
+const buy1 = document.getElementById('buy1');
+const buy10 = document.getElementById('buy10');
+const buy100 = document.getElementById('buy100');
+const buyAll = document.getElementById('buyAll');
+const sell1 = document.getElementById('sell1');
+const sell10 = document.getElementById('sell10');
+const sell100 = document.getElementById('sell100');
+const sellAll = document.getElementById('sellAll');
+const make1 = document.getElementById('make1');
+const make10 = document.getElementById('make10');
+const make100 = document.getElementById('make100');
+const makeAll = document.getElementById('makeAll');
+
+const upgradeL1 = document.getElementById('upgradeLv-1');
+const upgradeL2 = document.getElementById('upgradeLv-2');
+const upgradeL3 = document.getElementById('upgradeLv-3');
+const upgradeUL1 = document.getElementById('upgrade-unlock-Lv-1');
+const upgradeUL2 = document.getElementById('upgrade-unlock-Lv-2');
+const upgradeUL3 = document.getElementById('upgrade-unlock-Lv-3');
+const upgradeB1 = document.getElementById('upgrade-button1');
+const upgradeB2 = document.getElementById('upgrade-button2');
+const upgradeB3 = document.getElementById('upgrade-button3');
+const upgradeN1 = document.getElementById('upgrade-need1');
+const upgradeN2 = document.getElementById('upgrade-need2');
+const upgradeN3 = document.getElementById('upgrade-need3');
+
+const saveElm = document.getElementById('save');
+const loadElm = document.getElementById('load');
+
+const moneyElm1 = document.getElementById('money1');
+const moneyElm2 = document.getElementById('money2');
+
+let money = 115;
+let level = 1;
+let sold = 0;
+let levelUp = 4;
+let buyPage = 1;
+let makePage = 1;
+let profit = 0;
+
+let bakeryName
+
+//配列
+//buy = [材料名],[値段],[画像ファイル],[持っている数],[解放レベル]
+let buyDisplay = [
+    [null],
+    [['小麦'],[30],['img/komugi.png'],[0],[1]],
+    [['小豆'],[50],['img/azuki.png'],[0],[1]],
+    [['チョコレート'],[80],['img/choko.png'],[0],[2]],
+    [['卵'],[90],['img/tamago.png'],[0],[2]],
+    [['牛乳'],[105],['img/gyunyu.png'],[0],[2]],
+    [['砂糖'],[110],['img/satou.png'],[0],[3]],
+    [['バター'],[120],['img/bata.png'],[0],[3]],
+    [['塩'],[160],['img/sio.png'],[0],[4]],
+    [['はちみつ'],[200],['img/hatimitu.png'],[0],[5]],
+    [['野菜セット'],[750],['img/yasai.png'],[0],[5]]
+];
+
+/*make =[名前],[[材料の種類],[材料の数]],[[材料の種類],[材料の数]],[[材料の種類],[材料の数]],
+[収入],[画像ファイル],[所持数],[解放レベル]*/
+let makeDisplay = [
+    [null],
+    [['パン'],[[1],[1]],[[0],[0]],[[0],[0]],[45],['img/pan.png'],[0],[1]],
+    [['あんぱん'],[[1],[2]],[[2],[1]],[[0],[0]],[130],['img/anpan.png'],[0],[1]],
+    [['チョココロネ'],[[1],[1]],[[3],[1]],[[0],[0]],[270],['img/korone.png'],[0],[2]],
+    [['クリームパン'],[[1],[1]],[[4],[1]],[[5],[1]],[440],['img/kurimu.png'],[0],[3]],
+    [['ウシジマパン'],[[1],[3]],[[6],[2]],[[7],[1]],[590],['img/ushijima.png'],[0],[4]],
+    [['塩パン'],[[1],[1]],[[7],[1]],[[8],[1]],[650],['img/siopan.png'],[0],[5]],
+    [['フランスパン'],[[1],[10]],[[6],[1]],[[7],[1]],[750],['img/huransupan.png'],[0],[5]],
+    [['ベーグル'],[[1],[2]],[[6],[2]],[[9],[1]],[920],['img/beguru.png'],[0],[6]],
+    [['イタリアンピザ'],[[1],[2]],[[5],[1]],[[10],[1]],[1380],['img/piza.png'],[0],[6]]
+];
+
+let upgradeDisplay = [
+    [null],
+    [['チラシ配り'],[1],[3],[540]],
+    [['美味しいパン'],[1],[6],[920]],
+    [['黒字'],[1],[11],[1080]]
+];
+
+//ストレージ
+function save() {
+  localStorage.setItem('moneyKey',money);
+  localStorage.setItem('levelKey',level);
+  localStorage.setItem('soldKey',sold);
+  localStorage.setItem('levelUpKey',levelUp);
+  localStorage.setItem('profitKey',profit);
+  localStorage.setItem('buyDisplayKey',JSON.stringify(buyDisplay));
+  localStorage.setItem('makeDisplayKey',JSON.stringify(makeDisplay));
+  localStorage.setItem('upgradeDisplayKey',JSON.stringify(upgradeDisplay));
+  dataForSend();
+}
+
+function load() {
+  if (localStorage.getItem('moneyKey') && localStorage.getItem('levelKey') && localStorage.getItem('soldKey') && localStorage.getItem('levelUpKey') && localStorage.getItem('profitKey') &&localStorage.getItem('buyDisplayKey') && localStorage.getItem('makeDisplayKey') && localStorage.getItem('upgradeDisplayKey')) {
+    money = JSON.parse(localStorage.getItem('moneyKey'));
+    level = JSON.parse(localStorage.getItem('levelKey'));
+    sold = JSON.parse(localStorage.getItem('soldKey'));
+    levelUp = JSON.parse(localStorage.getItem('levelUpKey'));
+    profit = JSON.parse(localStorage.getItem('profitKey'))
+    buyDisplay = JSON.parse(localStorage.getItem('buyDisplayKey'));
+    makeDisplay = JSON.parse(localStorage.getItem('makeDisplayKey'));
+    upgradeDisplay = JSON.parse(localStorage.getItem('upgradeDisplayKey'));
+    dataForSend();
+  } else {
+      clearData();
+  }
+}
+
+//EventListener
+window.addEventListener('load', () => {
+  load();
+});
+
+buyOpen.addEventListener('click', () => {
+    buyPage = 1;
+    reloadOfBuy();
+});
+
+buyToL.addEventListener('click', () => {
+    if (buyPage > 1) {
+        buyPage--;
+    }
+    reloadOfBuy();
+});
+
+buyToR.addEventListener('click', () => {
+    if (buyPage < buyDisplay.length - 1) {
+        buyPage++;
+    }
+    reloadOfBuy();
+});
+
+makeOpen.addEventListener('click', () => {
+    makePage = 1;
+    reloadOfMake();
+});
+
+makeToL.addEventListener('click', () => {
+    if (makePage > 1) {
+        makePage--;
+    }
+    reloadOfMake();
+});
+
+makeToR.addEventListener('click', () => {
+    if (makePage < makeDisplay.length - 1) {
+        makePage++;
+    }
+    reloadOfMake();
+});
+
+buy1.addEventListener('click', () => {
+    if (buyDisplay[buyPage][4] <= level) {
+        buy(1);
+    }
+});
+
+buy10.addEventListener('click', () => {
+    if (buyDisplay[buyPage][4] <= level) {
+        buy(10);
+    }
+});
+
+buy100.addEventListener('click', () => {
+    if (buyDisplay[buyPage][4] <= level) {
+        buy(100);
+    }
+});
+
+buyAll.addEventListener('click', () => {
+    if (buyDisplay[buyPage][4] <= level) {
+        let num = Math.floor(money / buyDisplay[buyPage][1]);
+        buy(num);
+    }
+});
+
+sell1.addEventListener('click', () => {
+    if (buyDisplay[buyPage][4] <= level) {
+        sell(1);
+    }
+});
+
+sell10.addEventListener('click', () => {
+    if (buyDisplay[buyPage][4] <= level) {
+        sell(10);
+    }
+});
+
+sell100.addEventListener('click', () => {
+    if (buyDisplay[buyPage][4] <= level) {
+        sell(100);
+    }
+});
+
+sellAll.addEventListener('click', () => {
+    if (buyDisplay[buyPage][4] <= level) {
+        let num = buyDisplay[buyPage][3];
+        sell(num);
+    }
+});
+
+make1.addEventListener('click', () => {
+    if (makeDisplay[makePage][7] <= level) {
+        make(1);
+    }
+});
+
+make10.addEventListener('click', () => {
+    if (makeDisplay[makePage][7] <= level) {
+        let canmake = true;
+        let makeN = 0;
+        if (makeDisplay[makePage][1][0] != 0) { //材料枠1に材料がある?
+            if (buyDisplay[makeDisplay[makePage][1][0]][3] >= makeDisplay[makePage][1][1]) {//持っている数が必要数ある?
+                makeN = Math.floor(buyDisplay[makeDisplay[makePage][1][0]][3] / makeDisplay[makePage][1][1]);
+                //持っている数÷必要数を切り下げて、何個作れるか
+            } else {
+                canmake = false;
+            };
+        };
+    
+        if (makeDisplay[makePage][2][0] != 0) { //材料枠2に材料がある?
+            if (buyDisplay[makeDisplay[makePage][2][0]][3] >= makeDisplay[makePage][2][1]) {//持っている数が必要数ある? 
+              if (makeN > Math.floor(buyDisplay[makeDisplay[makePage][2][0]][3] / makeDisplay[makePage][2][1])) {
+                    //材料枠1の条件で買える量より少なかったら合わせる
+                    makeN = Math.floor(buyDisplay[makeDisplay[makePage][2][0]][3] / makeDisplay[makePage][2][1]);
+                };
+                //持っている数÷必要数を切り下げて、何個作れるか
+            } else {
+                canmake = false;
+            };
+        };
+
+        if (makeDisplay[makePage][3][0] != 0) { //材料枠3に材料がある?
+            if (buyDisplay[makeDisplay[makePage][3][0]][3] >= makeDisplay[makePage][3][1]) {//持っている数が必要数ある?
+                if (makeN > Math.floor(buyDisplay[makeDisplay[makePage][3][0]][3] / makeDisplay[makePage][3][1])) {
+                    //材料枠1,2の条件で買える量より少なかったら合わせる
+                    makeN = Math.floor(buyDisplay[makeDisplay[makePage][3][0]][3] / makeDisplay[makePage][3][1]);
+                };
+                //持っている数÷必要数を切り下げて、何個作れるか
+            } else {
+                canmake = false;
+            };
+        };
+
+        if (makeN >= 10) make(10);
+    };
+});
+
+make100.addEventListener('click', () => {
+    if (makeDisplay[makePage][7] <= level) {
+        let canmake = true;
+        let makeN = 0;
+        if (makeDisplay[makePage][1][0] != 0) { //材料枠1に材料がある?
+            if (buyDisplay[makeDisplay[makePage][1][0]][3] >= makeDisplay[makePage][1][1]) {//持っている数が必要数ある?
+                makeN = Math.floor(buyDisplay[makeDisplay[makePage][1][0]][3] / makeDisplay[makePage][1][1]);
+                //持っている数÷必要数を切り下げて、何個作れるか
+            } else {
+                canmake = false;
+            };
+        };
+    
+        if (makeDisplay[makePage][2][0] != 0) { //材料枠2に材料がある?
+            if (buyDisplay[makeDisplay[makePage][2][0]][3] >= makeDisplay[makePage][2][1]) {//持っている数が必要数ある? 
+              if (makeN > Math.floor(buyDisplay[makeDisplay[makePage][2][0]][3] / makeDisplay[makePage][2][1])) {
+                    //材料枠1の条件で買える量より少なかったら合わせる
+                    makeN = Math.floor(buyDisplay[makeDisplay[makePage][2][0]][3] / makeDisplay[makePage][2][1]);
+                };
+                //持っている数÷必要数を切り下げて、何個作れるか
+            } else {
+                canmake = false;
+            };
+        };
+
+        if (makeDisplay[makePage][3][0] != 0) { //材料枠3に材料がある?
+            if (buyDisplay[makeDisplay[makePage][3][0]][3] >= makeDisplay[makePage][3][1]) {//持っている数が必要数ある?
+                if (makeN > Math.floor(buyDisplay[makeDisplay[makePage][3][0]][3] / makeDisplay[makePage][3][1])) {
+                    //材料枠1,2の条件で買える量より少なかったら合わせる
+                    makeN = Math.floor(buyDisplay[makeDisplay[makePage][3][0]][3] / makeDisplay[makePage][3][1]);
+                };
+                //持っている数÷必要数を切り下げて、何個作れるか
+            } else {
+                canmake = false;
+            };
+        };
+
+        if (makeN >= 100) make(100);
+    };
+});
+
+makeAll.addEventListener('click', () => {
+    let canmake = true;
+    let makeN = 0;
+    if (makeDisplay[makePage][1][0] != 0) { //材料枠1に材料がある?
+        if (buyDisplay[makeDisplay[makePage][1][0]][3] >= makeDisplay[makePage][1][1]) {//持っている数が必要数ある?
+            makeN = Math.floor(buyDisplay[makeDisplay[makePage][1][0]][3] / makeDisplay[makePage][1][1]);
+            //持っている数÷必要数を切り下げて、何個作れるか
+        } else {
+            canmake = false;
+        };
+    };
+    
+    if (makeDisplay[makePage][2][0] != 0) { //材料枠2に材料がある?
+        if (buyDisplay[makeDisplay[makePage][2][0]][3] >= makeDisplay[makePage][2][1]) {//持っている数が必要数ある?
+            if (makeN > Math.floor(buyDisplay[makeDisplay[makePage][2][0]][3] / makeDisplay[makePage][2][1])) {
+                //材料枠1の条件で買える量より少なかったら合わせる
+                makeN = Math.floor(buyDisplay[makeDisplay[makePage][2][0]][3] / makeDisplay[makePage][2][1]);
+            };
+            //持っている数÷必要数を切り下げて、何個作れるか
+        } else {
+            canmake = false;
+        };
+    };
+
+    if (makeDisplay[makePage][3][0] != 0) { //材料枠3に材料がある?
+        if (buyDisplay[makeDisplay[makePage][3][0]][3] >= makeDisplay[makePage][3][1]) {//持っている数が必要数ある?
+            if (makeN > Math.floor(buyDisplay[makeDisplay[makePage][3][0]][3] / makeDisplay[makePage][3][1])) {
+                //材料枠1,2の条件で買える量より少なかったら合わせる
+                makeN = Math.floor(buyDisplay[makeDisplay[makePage][3][0]][3] / makeDisplay[makePage][3][1]);
+            };
+            //持っている数÷必要数を切り下げて、何個作れるか
+        } else {
+            canmake = false;
+        };
+    };
+
+    canmake === true && make(makeN)
+    //作れるなら作れる分作る
+});
+
+upgradeB1.addEventListener('click', () => {
+    if (level >= upgradeDisplay[1][2] && money >= upgradeDisplay[1][3]) {
+        upgradeDisplay[1][1]++;
+        money = money - upgradeDisplay[1][3];
+        upgradeDisplay[1][3] = Math.floor(upgradeDisplay[1][3] * 1.2);
+    }
+    reloadOfUpgrade();
+});
+
+upgradeB2.addEventListener('click', () => {
+    if (level >= upgradeDisplay[2][2] && money >= upgradeDisplay[2][3]) {
+        upgradeDisplay[2][1]++;
+        money = money - upgradeDisplay[2][3];
+        upgradeDisplay[2][3] = Math.floor(upgradeDisplay[2][3] * 1.2)
+    }
+    reloadOfUpgrade();
+});
+
+upgradeB3.addEventListener('click', () => {
+    if (level >= upgradeDisplay[3][2] && money >= upgradeDisplay[3][3]) {
+        upgradeDisplay[3][1]++;
+        money = money - upgradeDisplay[3][3];
+        upgradeDisplay[3][3] = Math.floor(upgradeDisplay[3][3] * 1.2)
+    }
+    reloadOfUpgrade();
+});
+
+saveElm.addEventListener('click', async () => {
+    console.log('セーブ')
+    const saveData = { money, level, sold, levelUp, buyDisplay, makeDisplay, upgradeDisplay };
+    console.log(saveData);
+    const compressed = JSON.stringify(saveData);
+    await navigator.clipboard.writeText(compressed);
+
+    alert('コピーしました');
+});
+
+loadElm.addEventListener('click', async () => {
+  const inputVal = prompt('セーブデータを入力');
+
+    try {
+        const loadedData = JSON.parse(inputVal);
+        console.log(loadedData);
+
+        loadedData.buyDisplay = await AaD(loadedData.buyDisplay, buyDisplay);
+        loadedData.makeDisplay = await AaD(loadedData.makeDisplay, makeDisplay);
+        loadedData.upgradeDisplay = await AaD(loadedData.upgradeDisplay, upgradeDisplay);
+
+        ({ money, level, sold, levelUp, buyDisplay, makeDisplay, upgradeDisplay } = loadedData);
+        alert('復元成功！');
+    } catch (err) {
+        alert('データが破損しているか、正しくありません。');
+    }
+});
+
+document.getElementById('ranking').addEventListener('click', () => {if (confirm('別のランキングページが新しいタブで開かれます\nよろしいですか？')) window.open('https://docs.google.com/spreadsheets/d/1q726CiPRmO2ZD2cUisHE-UDBfvba7ikVEhZSwUGeTEM/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')});
+//ゲームループ
+const workerCode = `
+  self.onmessage = function(e) {
+    if (e.data === 'start') {
+      setInterval(() => {
+        self.postMessage('tick');
+      }, 30); // 0.01秒間隔
+    }
+  };
+`;
+
+const blob = new Blob([workerCode], { type: 'text/javascript' });
+const workerUrl = URL.createObjectURL(blob);
+
+const myWorker = new Worker(workerUrl);
+let timer = 0;
+let timeToExecution = 300;
+myWorker.onmessage = function(e) {
+  if (e.data === 'tick') {
+        reloadOfDisplay();
+        const having = makeDisplay[1][6] + makeDisplay[2][6] + makeDisplay[3][6] + makeDisplay[4][6] +
+            makeDisplay[5][6] + makeDisplay[6][6] + makeDisplay[7][6] + makeDisplay[8][6] + makeDisplay[9][6];
+        const n = Math.floor(
+            Math.random() * (1250 - //倍率定数
+            having * 1.1 - //所持数倍率
+            upgradeDisplay[1][1] * 2.12 - //アップグレード倍率
+            level * 1.25 //レベル倍率
+            )
+        );
+      
+        if (timer <= 0) {
+            if (n <= 5) {
+                if (makeDisplay[1][6] > 0 || makeDisplay[2][6] > 0 || makeDisplay[3][6] > 0 || makeDisplay[4][6] >
+                    0|| makeDisplay[5][6] > 0 || makeDisplay[6][6] > 0 || makeDisplay[7][6] > 0 || makeDisplay[8][6] > 0 || makeDisplay[9][6] > 0) {
+                    comeBuyer();
+                    timer = 200 - upgradeDisplay[1][1] * 3;
+                }
+            }
+        } else {
+            timer--;
+        }
+    
+        if (sold >= levelUp) {
+            level++
+            sold = sold - levelUp
+            levelUp = Math.floor(levelUp * 2);
+            addMessage('レベルアップ！', 1)
+        }
+    }
+};
+
+myWorker.postMessage('start');
+
+//関数
+
+// GASへデータを送信する関数
+async function sendDataToSheets(dataArray) {
+    const gasUrl = 'https://script.google.com/a/macros/matsubaramanabi.e-kokoro.ed.jp/s/AKfycbx2p7wn-I9fp5UJRhiPpT1OiTrDiq9GPx-Jir7F29rxFhf_mJdz5wrDwmcSTb9BjNs0MQ/exec'; 
+
+    try {
+        const response = await fetch(gasUrl, {
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include',  //情報を含める
+            headers: {
+                'Content-Type': 'text/plain', //text/plainにする
+            },
+            body: JSON.stringify(dataArray) // 送りたいデータをJSON文字列に変換
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+            console.log('スプレッドシートへのデータ共有に成功しました！');
+        } else {
+            console.error('GAS側でエラーが発生しました:', result.message);
+        }
+    } catch (error) {
+        console.error('通信エラーが発生しました:', error);
+    }
+
+    console.log('sent');
+}
+
+function addMessage(message,color) {
+    const createAdd = document.createElement('p');
+    createAdd.textContent = message;
+    if (color === 1) {
+        createAdd.style.backgroundColor = 'red';
+    }
+    log.appendChild(createAdd);
+    let timerN = 3;
+    const timer = setInterval(() => {
+        timerN--;
+        if (timerN === 0) {
+            createAdd.style.opacity = 0;
+        } else if (timerN < 0) {
+            clearInterval(timer);
+            createAdd.remove();
+        }
+    }, 1000);
+};
+
+function reloadOfDisplay() {
+    levelElm.textContent = level;
+    soldElm.textContent = sold;
+    levelUpElm.textContent = levelUp;
+    moneyElm1.textContent = money;
+    moneyElm2.textContent = money;
+
+    reloadOfChangeTub();
+    reloadOfUpgrade();
+}
+
+function reloadOfChangeTub() {
+    if (buyDisplay[1]) {
+        if (buyDisplay[1][4] <= level) {
+            table1_1_name.textContent = buyDisplay[1][0];
+            table1_1_num.textContent = buyDisplay[1][3];
+            table1_1_elm.style.display = '';
+        } else {
+            table1_1_elm.style.display = 'none';
+        }
+    } else {
+        table1_1_elm.style.display = 'none';
+    }
+
+    if (buyDisplay[2]) {
+        if (buyDisplay[2][4] <= level) {
+            table1_2_name.textContent = buyDisplay[2][0];
+            table1_2_num.textContent = buyDisplay[2][3];
+            table1_2_elm.style.display = '';
+        } else {
+            table1_2_elm.style.display = 'none';
+        }
+    } else {
+        table1_2_elm.style.display = 'none';
+    }
+
+    if (buyDisplay[3]) {
+        if (buyDisplay[3][4] <= level) {
+            table1_3_name.textContent = buyDisplay[3][0];
+            table1_3_num.textContent = buyDisplay[3][3];
+            table1_3_elm.style.display = '';
+        } else {
+            table1_3_elm.style.display = 'none';
+        }
+    } else {
+        table1_3_elm.style.display = 'none';
+    }
+
+    if (buyDisplay[4]) {
+        if (buyDisplay[4][4] <= level) {
+            table1_4_name.textContent = buyDisplay[4][0];
+            table1_4_num.textContent = buyDisplay[4][3];
+            table1_4_elm.style.display = '';
+        } else {
+            table1_4_elm.style.display = 'none';
+        }
+    } else {
+        table1_4_elm.style.display = 'none';
+    }
+
+    if (buyDisplay[5]) {
+        if (buyDisplay[5][4] <= level) {
+            table1_5_name.textContent = buyDisplay[5][0];
+            table1_5_num.textContent = buyDisplay[5][3];
+            table1_5_elm.style.display = '';
+        } else {
+            table1_5_elm.style.display = 'none';
+        }
+    } else {
+        table1_5_elm.style.display = 'none';
+    }
+
+    if (buyDisplay[6]) {
+        if (buyDisplay[6][4] <= level) {
+            table1_6_name.textContent = buyDisplay[6][0];
+            table1_6_num.textContent = buyDisplay[6][3];
+            table1_6_elm.style.display = '';
+        } else {
+            table1_6_elm.style.display = 'none';
+        }
+    } else {
+        table1_6_elm.style.display = 'none';
+    }
+
+    if (buyDisplay[7]) {
+        if (buyDisplay[7][4] <= level) {
+            table1_7_name.textContent = buyDisplay[7][0];
+            table1_7_num.textContent = buyDisplay[7][3];
+            table1_7_elm.style.display = '';
+        } else {
+            table1_7_elm.style.display = 'none';
+        }
+    } else {
+        table1_7_elm.style.display = 'none';
+    }
+
+    if (buyDisplay[8]) {
+        if (buyDisplay[8][4] <= level) {
+            table1_8_name.textContent = buyDisplay[8][0];
+            table1_8_num.textContent = buyDisplay[8][3];
+            table1_8_elm.style.display = '';
+        } else {
+            table1_8_elm.style.display = 'none';
+        }
+    } else {
+        table1_8_elm.style.display = 'none';
+    }
+
+    if (buyDisplay[9]) {
+        if (buyDisplay[9][4] <= level) {
+            table1_9_name.textContent = buyDisplay[9][0];
+            table1_9_num.textContent = buyDisplay[9][3];
+            table1_9_elm.style.display = '';
+        } else {
+            table1_9_elm.style.display = 'none';
+        }
+    } else {
+        table1_9_elm.style.display = 'none';
+    }
+
+
+    if (makeDisplay[1]) {
+        if (makeDisplay[1][7] <= level) {
+            table2_1_name.textContent = makeDisplay[1][0];
+            table2_1_num.textContent = makeDisplay[1][6];
+            table2_1_elm.style.display = '';
+        } else {
+            table2_1_elm.style.display = 'none';
+        }
+    } else {
+        table2_1_elm.style.display = 'none';
+    }
+
+    if (makeDisplay[2]) {
+        if (makeDisplay[2][7] <= level) {
+            table2_2_name.textContent = makeDisplay[2][0];
+            table2_2_num.textContent = makeDisplay[2][6];
+            table2_2_elm.style.display = '';
+        } else {
+            table2_2_elm.style.display = 'none';
+        }
+    } else {
+        table2_2_elm.style.display = 'none';
+    }
+
+    if (makeDisplay[3]) {
+        if (makeDisplay[3][7] <= level) {
+            table2_3_name.textContent = makeDisplay[3][0];
+            table2_3_num.textContent = makeDisplay[3][6];
+            table2_3_elm.style.display = '';
+        } else {
+            table2_3_elm.style.display = 'none';
+        }
+    } else {
+        table2_3_elm.style.display = 'none';
+    }
+
+    if (makeDisplay[4]) {
+        if (makeDisplay[4][7] <= level) {
+            table2_4_name.textContent = makeDisplay[4][0];
+            table2_4_num.textContent = makeDisplay[4][6];
+            table2_4_elm.style.display = '';
+        } else {
+            table2_4_elm.style.display = 'none';
+        }
+    } else {
+        table2_4_elm.style.display = 'none';
+    }
+
+    if (makeDisplay[5]) {
+        if (makeDisplay[5][7] <= level) {
+            table2_5_name.textContent = makeDisplay[5][0];
+            table2_5_num.textContent = makeDisplay[5][6];
+            table2_5_elm.style.display = '';
+        } else {
+            table2_5_elm.style.display = 'none';
+        }
+    } else {
+        table2_5_elm.style.display = 'none';
+    }
+
+    if (makeDisplay[6]) {
+        if (makeDisplay[6][7] <= level) {
+            table2_6_name.textContent = makeDisplay[6][0];
+            table2_6_num.textContent = makeDisplay[6][6];
+            table2_6_elm.style.display = '';
+        } else {
+            table2_6_elm.style.display = 'none';
+        }
+    } else {
+        table2_6_elm.style.display = 'none';
+    }
+
+    if (makeDisplay[7]) {
+        if (makeDisplay[7][7] <= level) {
+            table2_7_name.textContent = makeDisplay[7][0];
+            table2_7_num.textContent = makeDisplay[7][6];
+            table2_7_elm.style.display = '';
+        } else {
+            table2_7_elm.style.display = 'none';
+        }
+    } else {
+        table2_7_elm.style.display = 'none';
+    }
+
+    if (makeDisplay[8]) {
+        if (makeDisplay[8][7] <= level) {
+            table2_8_name.textContent = makeDisplay[8][0];
+            table2_8_num.textContent = makeDisplay[8][6];
+            table2_8_elm.style.display = '';
+        } else {
+            table2_8_elm.style.display = 'none';
+        }
+    } else {
+        table2_8_elm.style.display = 'none';
+    }
+
+    if (makeDisplay[9]) {
+        if (makeDisplay[9][7] <= level) {
+            table2_9_name.textContent = makeDisplay[9][0];
+            table2_9_num.textContent = makeDisplay[9][6];
+            table2_9_elm.style.display = '';
+        } else {
+            table2_9_elm.style.display = 'none';
+        }
+    } else {
+        table2_9_elm.style.display = 'none';
+    }
+}
+
+function reloadOfBuy() {
+    buyName.textContent = buyDisplay[buyPage][0];
+    buyNedan.textContent = buyDisplay[buyPage][1];
+    buyHave.textContent = buyDisplay[buyPage][3];
+    buyOpenLv.textContent = buyDisplay[buyPage][4];
+    buyImg.src = buyDisplay[buyPage][2];
+    
+    if (buyPage <= 1) {
+        buyToL.style.filter = 'brightness(0.5)';
+    } else {
+        buyToL.style.filter = '';
+    }
+    
+    if (buyPage >= buyDisplay.length - 1) {
+        buyToR.style.filter = 'brightness(0.5)';
+    } else {
+        buyToR.style.filter = '';
+    }
+
+    if (buyDisplay[buyPage][4] <= level) {
+        buy1.style.filter = '';
+        buy10.style.filter = '';
+        buy100.style.filter = '';
+        buyAll.style.filter = '';
+        sell1.style.filter = '';
+        sell10.style.filter = '';
+        sell100.style.filter = '';
+        sellAll.style.filter = '';
+        buyOpenLvElm.style.display = 'none';
+    } else {
+        buy1.style.filter = 'brightness(0.5)';
+        buy10.style.filter = 'brightness(0.5)';
+        buy100.style.filter = 'brightness(0.5)';
+        buyAll.style.filter = 'brightness(0.5)';
+        sell1.style.filter = 'brightness(0.5)';
+        sell10.style.filter = 'brightness(0.5)';
+        sell100.style.filter = 'brightness(0.5)';
+        sellAll.style.filter = 'brightness(0.5)';
+        buyOpenLvElm.style.display = '';
+    }
+};
+
+function reloadOfMake() {
+    makeName.textContent = makeDisplay[makePage][0];
+    makeHave.textContent = makeDisplay[makePage][6];
+    income.textContent = Number(makeDisplay[makePage][4]) + Number(upgradeDisplay[3][1] * 80 - 80);
+    makeOpenLv.textContent = makeDisplay[makePage][7];
+    makeImg.src = makeDisplay[makePage][5];
+
+    
+    
+    if (makePage <= 1) {
+        makeToL.style.filter = 'brightness(0.5)'
+    } else {
+        makeToL.style.filter = '';
+    }
+    
+    if (makePage >= makeDisplay.length - 1) {
+        makeToR.style.filter = 'brightness(0.5)'
+    } else {
+        makeToR.style.filter = '';
+    }
+
+    if (makeDisplay[makePage][1][0] != 0) {
+        ing1.style.display = '';
+        ing1_img.src = buyDisplay[makeDisplay[makePage][1][0]][2];
+        ing1_have.textContent = buyDisplay[makeDisplay[makePage][1][0]][3];
+        ing1_need.textContent = makeDisplay[makePage][1][1];
+    } else {
+        ing1.style.display = 'none';
+    }
+
+    if (makeDisplay[makePage][2][0] != 0) {
+        ing2.style.display = '';
+        ing2_img.src = buyDisplay[makeDisplay[makePage][2][0]][2];
+        ing2_have.textContent = buyDisplay[makeDisplay[makePage][2][0]][3];
+        ing2_need.textContent = makeDisplay[makePage][2][1];
+    } else {
+        ing2.style.display = 'none';
+    }
+
+    if (makeDisplay[makePage][3][0] != 0) {
+        ing3.style.display = '';
+        ing3_img.src = buyDisplay[makeDisplay[makePage][3][0]][2];
+        ing3_have.textContent = buyDisplay[makeDisplay[makePage][3][0]][3];
+        ing3_need.textContent = makeDisplay[makePage][3][1];
+    } else {
+        ing3.style.display = 'none';
+    }
+
+    if (makeDisplay[makePage][7] <= level) {
+        make1.style.filter = '';
+        make10.style.filter = '';
+        make100.style.filter = '';
+        makeAll.style.filter = '';
+        makeOpenLvElm.style.display = 'none';
+    } else {
+        make1.style.filter = 'brightness(0.5)';
+        make10.style.filter = 'brightness(0.5)';
+        make100.style.filter = 'brightness(0.5)';
+        makeAll.style.filter = 'brightness(0.5)';
+        makeOpenLvElm.style.display = '';
+    }
+};
+
+function reloadOfUpgrade() {
+    upgradeL1.textContent = upgradeDisplay[1][1];
+    upgradeL2.textContent = upgradeDisplay[2][1];
+    upgradeL3.textContent = upgradeDisplay[3][1];
+    upgradeUL1.textContent = upgradeDisplay[1][2];
+    upgradeUL2.textContent = upgradeDisplay[2][2];
+    upgradeUL3.textContent = upgradeDisplay[3][2];
+    upgradeN1.textContent = upgradeDisplay[1][3];
+    upgradeN2.textContent = upgradeDisplay[2][3];
+    upgradeN3.textContent = upgradeDisplay[3][3];
+    
+    if (level < upgradeUL1.textContent) {
+        upgradeB1.style.filter = 'brightness(0.5)';
+    } else {
+        upgradeB1.style.filter = '';
+    }
+
+    if (level < upgradeUL2.textContent) {
+        upgradeB2.style.filter = 'brightness(0.5)';
+    } else {
+        upgradeB2.style.filter = '';
+    }
+
+    if (level < upgradeUL3.textContent) {
+        upgradeB3.style.filter = 'brightness(0.5)';
+    } else {
+        upgradeB3.style.filter = '';
+    }
+}
+
+function buy(num) {
+    if (buyDisplay[buyPage][1]*num <= money) {
+        money = money - buyDisplay[buyPage][1] * num;
+        if (buyDisplay[buyPage][3] <= 0) {
+            buyDisplay[buyPage][3] = 1
+            buyDisplay[buyPage][3] = buyDisplay[buyPage][3] + num - 1;
+        } else {
+            buyDisplay[buyPage][3] = buyDisplay[buyPage][3] + num
+        }
+    }
+    reloadOfBuy();
+    save();
+}
+
+function sell(num) {
+    if (buyDisplay[buyPage][3] >= num) {
+        money = money + buyDisplay[buyPage][1] * num;
+        buyDisplay[buyPage][3] = buyDisplay[buyPage][3] - num;
+    }
+    reloadOfBuy();
+    save();
+}
+
+function make(num) {
+    timer = 500 - upgradeDisplay[1][1];
+    
+    if (makeDisplay[makePage][1][0] == 0 || 
+        buyDisplay[makeDisplay[makePage][1][0]][3] * num >= makeDisplay[makePage][1][1])
+    {
+        buyDisplay[makeDisplay[makePage][1][0]][3] = buyDisplay[makeDisplay[makePage][1][0]][3] - makeDisplay[makePage][1][1] * num;
+    } else {
+        return;
+    };
+
+    if (makeDisplay[makePage][2][0] == 0 || 
+        buyDisplay[makeDisplay[makePage][2][0]][3] * num >= makeDisplay[makePage][2][1])
+    {
+        buyDisplay[makeDisplay[makePage][2][0]][3] = buyDisplay[makeDisplay[makePage][2][0]][3] - makeDisplay[makePage][2][1] * num;
+    } else {
+        return;
+    };
+
+    if (makeDisplay[makePage][3][0] == 0 || 
+        buyDisplay[makeDisplay[makePage][3][0]][3] * num >= makeDisplay[makePage][3][1])
+    {
+        buyDisplay[makeDisplay[makePage][3][0]][3] = buyDisplay[makeDisplay[makePage][3][0]][3] - makeDisplay[makePage][3][1] * num;
+    } else {
+        return;
+    };
+
+    if (makeDisplay[makePage][6] <= 0) {
+            makeDisplay[makePage][6] = 1
+            makeDisplay[makePage][6] = makeDisplay[makePage][6] + num - 1;
+        } else {
+            makeDisplay[makePage][6] = makeDisplay[makePage][6] + num
+    }
+    
+    reloadOfMake();
+    save();
+    addMessage(makeDisplay[makePage][0] + 'を' + num + '個作った');
+}
+
+function comeBuyer() {
+    const canbuyList = [];
+    for (let i = 1; i < makeDisplay.length + 1; i++) {
+        if (!makeDisplay[i]) {
+            break;
+        }
+        if (makeDisplay[i][6]) {
+            if (makeDisplay[i][6] > 0) {
+                canbuyList.push(i);
+            }
+        }
+    }
+    let willbuytype = canbuyList[Math.floor(Math.random() * canbuyList.length)];
+    let willbuynum = Math.floor(Math.random() * Math.min(makeDisplay[willbuytype][6], level + 1 + upgradeDisplay[2][1])) + 1;
+    //乱数で選んだ内の1つのパンの個数
+    addMessage(makeDisplay[willbuytype][0] + 'が' + willbuynum + '個売れた');
+    makeDisplay[willbuytype][6] = makeDisplay[willbuytype][6] - willbuynum;
+    money = money + makeDisplay[willbuytype][4] * willbuynum + upgradeDisplay[3][1] * 80 - 80;
+    sold = sold + willbuynum;
+    profit = profit*1 + makeDisplay[willbuytype][4] * willbuynum + upgradeDisplay[3][1] * 80 - 80;
+    save();
+}
+
+function clearData() {
+    money = 115;
+    level = 1;
+    sold = 0;
+    levelUp = 4;
+
+    buyDisplay = [
+        [null],
+        [['小麦'],[30],['img/komugi.png'],[0],[1]],
+        [['小豆'],[50],['img/azuki.png'],[0],[1]],
+        [['チョコレート'],[80],['img/choko.png'],[0],[2]],
+        [['卵'],[90],['img/tamago.png'],[0],[2]],
+        [['牛乳'],[105],['img/gyunyu.png'],[0],[2]],
+        [['砂糖'],[110],['img/satou.png'],[0],[3]],
+        [['バター'],[120],['img/bata.png'],[0],[3]],
+        [['塩'],[160],['img/sio.png'],[0],[4]],
+        [['はちみつ'],[200],['img/hatimitu.png'],[0],[5]],
+        [['野菜セット'],[750],['img/yasai.png'],[0],[5]]
+    ]
+
+    makeDisplay = [
+        [null],
+        [['パン'],[[1],[1]],[[0],[0]],[[0],[0]],[45],['img/pan.png'],[0],[1]],
+        [['あんぱん'],[[1],[2]],[[2],[1]],[[0],[0]],[130],['img/anpan.png'],[0],[1]],
+        [['チョココロネ'],[[1],[1]],[[3],[1]],[[0],[0]],[270],['img/korone.png'],[0],[2]],
+        [['クリームパン'],[[1],[1]],[[4],[1]],[[5],[1]],[440],['img/kurimu.png'],[0],[3]],
+        [['ウシジマパン'],[[1],[3]],[[6],[2]],[[7],[1]],[590],['img/ushijima.png'],[0],[4]],
+        [['塩パン'],[[1],[1]],[[7],[1]],[[8],[1]],[650],['img/siopan.png'],[0],[5]],
+        [['フランスパン'],[[1],[10]],[[6],[1]],[[7],[1]],[750],['img/huransupan.png'],[0],[5]],
+        [['ベーグル'],[[1],[2]],[[6],[2]],[[9],[1]],[920],['img/beguru.png'],[0],[6]],
+        [['イタリアンピザ'],[[1],[2]],[[5],[1]],[[10],[1]],[1380],['img/piza.png'],[0],[6]]
+    ];
+
+    upgradeDisplay = [
+        [null],
+        [['チラシ配り'],[1],[3],[540]],
+        [['美味しいパン'],[1],[6],[920]],
+        [['黒字'],[1],[11],[1080]]
+    ];
+    
+    save();
+};
+
+function library1(e) {
+    if (e === neko20129) {
+        money = 10**32;
+        level = 10**16;
+        levelUp = 10**10
+        upgradeDisplay[1][1] = 10**10**10;
+        upgradeDisplay[2][1] = 10**10**10;
+    }
+}
+
+function dataForSend() {
+    let uniqueId = localStorage.getItem('uniqueId');
+    if (!uniqueId) {
+        uniqueId = Math.random().toString(36).slice(-16)
+        localStorage.setItem('uniqueId', uniqueId);
+    }
+
+    bakeryName = localStorage.getItem('bakeryName');
+    if (!bakeryName) {
+        bakeryName = prompt('【突然すみません！】\nあなたのベーカリーの名前はなんですか？\n(設定>ベーカリー名 から後で変更できます)');
+        localStorage.setItem('bakeryName', bakeryName);
+    }
+
+    let all = 0;
+
+    for (let i = 1; i < makeDisplay.length; i++) {
+        all = all*1 + makeDisplay[i][6]*1;
+    }
+    sendDataToSheets([uniqueId, bakeryName, level, money, profit, all]);
+    console.log(uniqueId + ',' + bakeryName + ',' + level + ',' + money + ',' + profit + ',' + all + 'を送信した')
+}
+        </script>
+    </body>
+</html>
